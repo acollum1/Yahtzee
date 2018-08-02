@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<title></title>
+	<header></header>
+</head>
+<body>
+	<div class='container'>
+		
+		
+	</div>
+	<div class='container'>
+		<div class='row'>
+			<div class="col-sm-2" id='rule'>
+				<span>Upper Section</span>
+			</div>
+			<div class="col-sm-1" id='rule'>
+				<span>Points</span>
+			</div>
+			<div class="col-sm-2" id='rule'>
+				<span>Lower Section</span>
+			</div>
+			<div class="col-sm-1" id='rule'>
+				<span>Points</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>ACES <img src="die1.png"> = 1</span><br>
+				<span>Add all ones</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="aces">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>3 OF A KIND</span><br>
+				<span>TOTAL OF ALL DICE</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="threeOk">...</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>TWOS <img src="die2.png"> = 2</span><br>
+				<span>Add all twos</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="twos">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>4 OF A KIND</span><br>
+				<span>TOTAL OF ALL DICE</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="fourOk">...</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>THREES <img src="die3.png"> = 3</span><br>
+				<span>Add all threes</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="threes">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>FULL HOUSE</span><br>
+				<span>SCORE 25</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="FH">...</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>FOURS <img src="die4.png"> = 4</span><br>
+				<span>Add all fours</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="fours">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>SM STRAIGHT (seq of 4)</span><br>
+				<span>SCORE 30</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="SM">...</span>
+			</div>
+			</div>
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>FIVES <img src="die5.png"> = 5</span><br>
+				<span>Add all fives</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="fives">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>LG STRAIGHT (seq of 5)</span><br>
+				<span>SCORE 40</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="LG">...</span>
+			</div>
+			
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>SIXES <img src="die6.png"> = 6</span><br>
+				<span>Add all sixes</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="sixes">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>YAHTZEE (5 of a kind)</span><br>
+				<span>SCORE 50</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="YZ">...</span>
+			</div>
+		</div>
+	
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>TOTAL SCORE</span><br>
+				<span>Total of Upper Section</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="upper-total">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>CHANCE</span><br>
+				<span>TOTAL OF ALL DICE</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="CH">...</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>BONUS + 35 points</span><br>
+				<span>If Upper Section is greater than 63</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="upper-bonus">...</span>
+			</div>
+			<div class="col-sm-2" id='guide'>
+				<span>BONUS Yahtzee</span><br>
+				<span>SCORE 100</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="bonus">...</span>
+			</div>
+		</div>
+
+		<div class='row'>
+			<div class="col-sm-2" id='guide'>
+				<span>Grand Total (Upper)</span><br>
+				<span>Total Upper Score + Bonus</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="total-upper">...</span>
+			</div>
+
+			<div class="col-sm-2" id='guide'>
+				<span>Total of Lower</span><br>
+				<span>...</span>
+			</div>
+			<div class="col-sm-1" id='points'>
+				<span id="lower-total">...</span>
+			</div>
+			<div class="col-sm-6 text-center">
+				<span id="die1"><img class="dice" id='die1-img' src='die1.svg'></span>
+				<span id="die2"><img class="dice" id='die2-img' src='die2.svg'></span>
+				<span id="die3"><img class="dice" id='die3-img' src='die3.svg'></span>
+				<span id="die4"><img class="dice" id='die4-img' src='die4.svg'></span>
+				<span id="die5"><img class="dice" id='die5-img' src='die5.svg'></span>
+				<div><span id="message">...</span></div>
+				</div>	
+			<div class="col-sm-6" id='total'>
+				<span>GRAND TOTAL: </span><span id='grand-total'>0</span>
+			</div>
+			<div class="col-sm-6 text-center">
+			
+			<button id="roll-dice" onclick="rollDice()">Roll Dice</button>
+		</div>
+		</div>
+	
+	<script type="text/javascript" src="app.js"></script>
+</body>
+</html>
