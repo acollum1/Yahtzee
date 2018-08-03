@@ -39,7 +39,6 @@ let total = {
 	grandUpper: 0,
 	lower: 0,
 	totalScore: 0,
-	boardCount: 0
 }
 
 let dice = {
@@ -82,25 +81,25 @@ function score () {
 	total.totalScore = total.grandUpper + total.lower;
 	totalScoreSpan.innerHTML = total.totalScore;
 	dice.rollNum = 0;
+	console.log(total.upper);
 }
 
 //Adds points to total score and resets for next turn.
 function bankPoints (v, name) {
-	if (total.boardCount<13) {
+	// if (total.boardCount<13) {
 	total.upper = upperBoard.aces + upperBoard.twos + upperBoard.threes + upperBoard.fours + upperBoard.fives + upperBoard.sixes;
 	total.lower = lowerBoard.threeOk + lowerBoard.fourOk + lowerBoard.lgStraight + lowerBoard.smStraight + lowerBoard.fullHouse + lowerBoard.chance + lowerBoard.yahtzee + lowerBoard.bonus;
 	msgSpan.innerHTML = `You marked your ${v}! Next turn...`;
 	score();
 	reset();
 	firstLoad();
-	console.log(total.boardCount);
-}
-	else {
-	msgSpan.innerHTML = `Game over!!!`;
-	buttonText.innerHTML = 'New Game';
-	reset();
-	buttonText.addEventListener('click', newGame);
-	}
+// }
+	// else {
+	// msgSpan.innerHTML = `Game over!!!`;
+	// buttonText.innerHTML = 'New Game';
+	// reset();
+	// buttonText.addEventListener('click', newGame);
+	// }
 }
 
 let newGame = function () {
@@ -173,6 +172,7 @@ function next () {
 
 // Checks Roll Number and allows you to roll dice.
 function rollDice() {
+	if (dice.choices.some(x => x === true)) {
 	if (dice.rollNum === 0) {
 	msgSpan.innerHTML = 'Select dice to keep, or select points on Scorecard.';
 	buttonText.innerHTML = 'Roll Again';
@@ -191,6 +191,10 @@ else {
 	buttonText.innerHTML = 'Roll Dice';
 	}
 	dice.rollNum++;
+}
+else {
+	msgSpan.innerHTML = 'Select at least 1 dice to roll...';
+	}
 }
 
 // Determines which dice image to display.
@@ -382,76 +386,60 @@ function keepUpperPoints (ord, pts) {
 function keepLowerPoints (abr, v) {
 	switch(abr) {
 	case "SM":
-	if (smSpan.classList.contains('active')) {
 		lowerBoard.smStraight = v;
 		smSpan.innerHTML = lowerBoard.smStraight;
 		total.lower += lowerBoard.smStraight;
 		bankPoints("Small Straight", abr);
 		smSpan.classList.add('keep');
-	}
 	break;
 	case "LG":
-	if (lgSpan.classList.contains('active')) {
 		lowerBoard.lgStraight = v;
 		lgSpan.innerHTML = lowerBoard.lgStraight;
 		total.lower += lowerBoard.lgStraight;
 		bankPoints("Large Straight", abr);
 		lgSpan.classList.add('keep');
-	}
 	break;
 	case "FH":
-	if (fhSpan.classList.contains('active')) {
 		lowerBoard.fullHouse = v;
 		fhSpan.innerHTML = lowerBoard.fullHouse;
 		total.lower += lowerBoard.fullHouse;
 		bankPoints("Full House", abr);
 		fhSpan.classList.add('keep');
-	}
 	break;
 	case "fourOk":
-	if (fourOkSpan.classList.contains('active')) {
 		lowerBoard.fourOk = v;
 		fourOkSpan.innerHTML = lowerBoard.fourOk;
 		total.lower += lowerBoard.fourOk;
 		bankPoints("4 of a kind", abr);
 		fourOkSpan.classList.add('keep');
-	}
 	break;
 	case "threeOk":
-	if (threeOkSpan.classList.contains('active')) {
 		lowerBoard.threeOk = v;
 		threeOkSpan.innerHTML = lowerBoard.threeOk;
 		total.lower += lowerBoard.threeOk;
 		bankPoints("3 of a kind", abr);
 		threeOkSpan.classList.add('keep');
-	}
 	break;
 	case "CH":
-	if (chSpan.classList.contains('active')) {
 		lowerBoard.chance = v;
 		chSpan.innerHTML = lowerBoard.chance;
 		total.lower += lowerBoard.chance;
 		bankPoints("Chance", abr);
 		chSpan.classList.add('keep');
-	}
 	break;
 	case "YZ":
-	if (yzSpan.classList.contains('active')) {
 		lowerBoard.yahtzee = v;
 		yzSpan.innerHTML = lowerBoard.yahtzee;
 		total.lower += lowerBoard.yahtzee;
 		bankPoints("Yahtzee", abr);
 		yzSpan.classList.add('keep');
-	}
 	break;
 	case "YZ+":
-	if (bonusSpan.classList.contains('active')) {
 		lowerBoard.bonus += v;
 		bonusSpan.innerHTML = lowerBoard.bonus;
 		total.lower += lowerBoard.bonus;
 		bankPoints("Yahtzee Bonus", abr);
 		bonusSpan.classList.add('keep');
-	}
 	break;
 	}
 	console.log(lowerBoard);
@@ -643,7 +631,6 @@ dice.choices[3]=false;
 selectDie4();
 dice.choices[4]=false;
 selectDie5();
-total.boardCount++;
 }
 
 // Event Handlers for user interaction.
