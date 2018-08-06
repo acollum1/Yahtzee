@@ -64,16 +64,19 @@ let lowerBoard = {
 	fullHouse: null,
 	chance: null,
 	yahtzee: null,
+}
+
+let yzBonus = {
 	bonus: null
 }
 
 //Updates scorecard
 function score () {
-	if (total.upper >= 63) {
+	if (total.upper < 63) {
+		total.grandUpper = total.upper;
+	} else {
 		total.grandUpper = total.upper+35;
 		uppBonusSpan.innerHTML = 35;
-	} else {
-	total.grandUpper = total.upper;
 }
 	uppTotalSpan.innerHTML = total.upper;
 	totUppSpan.innerHTML = total.grandUpper;
@@ -81,25 +84,41 @@ function score () {
 	total.totalScore = total.grandUpper + total.lower;
 	totalScoreSpan.innerHTML = total.totalScore;
 	dice.rollNum = 0;
+	total.boardCount++
 	console.log(total.upper);
+	console.log(total.grandUpper);
+	console.log(total.lower);
+	console.log(total.totalScore);
+}
+
+function objNull(obj) {
+	for (let key in obj) {
+		if (obj[key] !== null) {
+			return false;
+		}
+			else {
+				return true;
+			}
+	}
 }
 
 //Adds points to total score and resets for next turn.
 function bankPoints (v, name) {
-	// if (total.boardCount<13) {
+	if (objNull(upperBoard) || objNull(lowerBoard)) {
 	total.upper = upperBoard.aces + upperBoard.twos + upperBoard.threes + upperBoard.fours + upperBoard.fives + upperBoard.sixes;
-	total.lower = lowerBoard.threeOk + lowerBoard.fourOk + lowerBoard.lgStraight + lowerBoard.smStraight + lowerBoard.fullHouse + lowerBoard.chance + lowerBoard.yahtzee + lowerBoard.bonus;
+	total.lower = lowerBoard.threeOk + lowerBoard.fourOk + lowerBoard.lgStraight + lowerBoard.smStraight + lowerBoard.fullHouse + lowerBoard.chance + lowerBoard.yahtzee + yzBonus.bonus;
 	msgSpan.innerHTML = `You marked your ${v}! Next turn...`;
 	score();
 	reset();
 	firstLoad();
-// }
-	// else {
-	// msgSpan.innerHTML = `Game over!!!`;
-	// buttonText.innerHTML = 'New Game';
-	// reset();
-	// buttonText.addEventListener('click', newGame);
-	// }
+}
+	else {
+	msgSpan.innerHTML = `Game over!!!`;
+	buttonText.innerHTML = 'New Game';
+	buttonText.addEventListener('click', newGame);
+	}
+	console.log(objNull(upperBoard));
+	console.log(objNull(lowerBoard));
 }
 
 let newGame = function () {
@@ -121,7 +140,7 @@ let newGame = function () {
 	total.grandUpper = 0;
 	total.lower = 0;
 	total.totalScore = 0;
-	total.boardCount = 0;
+	reset();
 	score();
 	firstLoad();
 	buttonText.removeEventListener('click', newGame);
@@ -152,6 +171,7 @@ function roll () {
 	if (dice.choices[i]) {
 		dice.value[i] = newNumber;
 		dice.choices[i] = true;
+		console.log(dice.value);
 	} else {
 		dice.value[i] = dice.value[i];
 		dice.choices[i] = false;
@@ -162,12 +182,12 @@ function roll () {
 
 function next () {
 	reset();
-	roll();//dice.value = [2,2,2,2,2];//
+	roll();//dice.value = [2,3,4,5,2];//
 	for (i=0; i<=dice.value.length; i++) {
 		turn(i, dice.value);
 	}
-	upperPointsLoop();
-	lowerPointsLoop();
+	upper_func();
+	lower_func();
 }
 
 // Checks Roll Number and allows you to roll dice.
@@ -218,42 +238,12 @@ function turn(dieOrd, num) {
 	}
 }
 
-	function selector (idx) {
-		console.log(idx);
-		switch(idx) {
-		case 0:
-		selectDie1();
-		break;
-		case 1:
-		selectDie2();
-		break;
-		case 2:
-		selectDie3();
-		break;
-		case 3:
-		selectDie4();
-		break;
-		case 4:
-		selectDie5();
-		break;
-		}
-	}
-
 // Sorted array for point calculations without changing original array.
 function sort(arr) {
   return arr.concat().sort();
 }
 
-function upperPointsLoop() {
-const sorted_arr = sort(dice.value);
-	for (i = 0; i < sorted_arr.length; i++) {
-	let ord = sorted_arr[i];
-	let ord2 = sorted_arr[i+1];
-	let ord3 = sorted_arr[i+2];
-	let ord4 = sorted_arr[i+3];
-	let ord5 = sorted_arr[i+4];
-	console.log(sorted_arr);
-	console.log(dice);
+function upper_func() {
 	//1s
     if (upperBoard.aces === null) upperPoints(1);
     //2s
@@ -267,17 +257,15 @@ const sorted_arr = sort(dice.value);
     //6s
     if (upperBoard.sixes === null) upperPoints(6);
 	}
-}
 
 // Checks sorted dice array for points.
-function lowerPointsLoop() {
+function lower_func() {
 	const sorted_arr = sort(dice.value);
-	for (i = 0; i < sorted_arr.length; i++) {
-	let ord = sorted_arr[i];
-	let ord2 = sorted_arr[i+1];
-	let ord3 = sorted_arr[i+2];
-	let ord4 = sorted_arr[i+3];
-	let ord5 = sorted_arr[i+4];
+	const ord = sorted_arr[0];
+	const ord2 = sorted_arr[1];
+	const ord3 = sorted_arr[2];
+	const ord4 = sorted_arr[3];
+	const ord5 = sorted_arr[4];
 	console.log(sorted_arr);
 	console.log(dice);
     //SM Straight
@@ -309,13 +297,12 @@ function lowerPointsLoop() {
 	if (lowerBoard.yahtzee && sorted_arr.every(x => x === ord)) {
 		lowerPoints("YZ+", 100);
 		msgSpan.innerHTML = 'You rolled another Yahtzee!!!';
-		}
-
+	}
 	//Chance
 	if (!lowerBoard.chance) {
 		let chanceOkPts = dice.value.reduce((a, b) => a + b, 0);
 	    lowerPoints("CH", chanceOkPts);
-    	}
+    }
     //4 of a kind
 	if (lowerBoard.fourOk === null && ord2 === ord && ord3 === ord && ord4 === ord || lowerBoard.fourOk === null && ord3 === ord2 && ord4 === ord2 && ord5 === ord2) {
 		let fourOkPts = dice.value.reduce((a, b) => a + b, 0);
@@ -334,159 +321,191 @@ function lowerPointsLoop() {
     			lowerPoints("threeOk", 0);
     		}
     	}
-    		break;
-    	}
-    	console.log(lowerBoard);
     }
 
 //Banks points based on user selection.
-function keepUpperPoints (ord, pts) {
+function keepUpperPoints (ord) {
+
+	let pts = ord * count(ord);
+
 	switch(ord) {
 		case 1:
+		if (acesSpan.classList.contains('active')){
 			upperBoard.aces = pts;
 			acesSpan.innerHTML = upperBoard.aces;
 			bankPoints("aces", ord);
 			acesSpan.classList.add('keep');
+		}
 		break;
 		case 2:
+		if (twosSpan.classList.contains('active')){
 			upperBoard.twos = pts;
 			twosSpan.innerHTML = upperBoard.twos;
 			bankPoints("twos", ord);
 			twosSpan.classList.add('keep');
+		}
 		break;
 		case 3:
+		if (threesSpan.classList.contains('active')){
 			upperBoard.threes = pts;
 			threesSpan.innerHTML = upperBoard.threes;
 			bankPoints("threes", ord);
 			threesSpan.classList.add('keep');
+		}
 		break;
 		case 4:
+		if (foursSpan.classList.contains('active')){
 			upperBoard.fours = pts;
 			foursSpan.innerHTML = upperBoard.fours;
 			bankPoints("fours", ord);
 			foursSpan.classList.add('keep');
+		}
 		break;
 		case 5:
+		if (fivesSpan.classList.contains('active')){
 			upperBoard.fives = pts;
 			fivesSpan.innerHTML = upperBoard.fives;
 			bankPoints("fives", ord);
 			fivesSpan.classList.add('keep');
+		}
 		break;
 		case 6:
+		if (sixesSpan.classList.contains('active')){
 			upperBoard.sixes = pts;
 			sixesSpan.innerHTML = upperBoard.sixes;
 			bankPoints("sixes", ord);
 			sixesSpan.classList.add('keep');
+		}
 		break;
 	}
-	console.log(lowerBoard);
+	console.log(upperBoard);
 }
 
 //Banks points based on user selection.
 function keepLowerPoints (abr, v) {
 	switch(abr) {
 	case "SM":
+	if (smSpan.classList.contains('active')){
 		lowerBoard.smStraight = v;
 		smSpan.innerHTML = lowerBoard.smStraight;
 		total.lower += lowerBoard.smStraight;
 		bankPoints("Small Straight", abr);
 		smSpan.classList.add('keep');
+	}
+	console.log(v);
 	break;
 	case "LG":
+	if (lgSpan.classList.contains('active')){
 		lowerBoard.lgStraight = v;
 		lgSpan.innerHTML = lowerBoard.lgStraight;
 		total.lower += lowerBoard.lgStraight;
 		bankPoints("Large Straight", abr);
 		lgSpan.classList.add('keep');
+	}
 	break;
 	case "FH":
+	if (fhSpan.classList.contains('active')){
 		lowerBoard.fullHouse = v;
 		fhSpan.innerHTML = lowerBoard.fullHouse;
 		total.lower += lowerBoard.fullHouse;
 		bankPoints("Full House", abr);
 		fhSpan.classList.add('keep');
+	}
 	break;
 	case "fourOk":
+	if (fourOkSpan.classList.contains('active')){
 		lowerBoard.fourOk = v;
 		fourOkSpan.innerHTML = lowerBoard.fourOk;
 		total.lower += lowerBoard.fourOk;
 		bankPoints("4 of a kind", abr);
 		fourOkSpan.classList.add('keep');
+	}
 	break;
 	case "threeOk":
+	if (threeOkSpan.classList.contains('active')){
 		lowerBoard.threeOk = v;
 		threeOkSpan.innerHTML = lowerBoard.threeOk;
 		total.lower += lowerBoard.threeOk;
 		bankPoints("3 of a kind", abr);
 		threeOkSpan.classList.add('keep');
+	}
 	break;
 	case "CH":
+	if (chSpan.classList.contains('active')){
 		lowerBoard.chance = v;
 		chSpan.innerHTML = lowerBoard.chance;
 		total.lower += lowerBoard.chance;
 		bankPoints("Chance", abr);
 		chSpan.classList.add('keep');
+	}
 	break;
 	case "YZ":
+	if (yzSpan.classList.contains('active')){
 		lowerBoard.yahtzee = v;
 		yzSpan.innerHTML = lowerBoard.yahtzee;
 		total.lower += lowerBoard.yahtzee;
 		bankPoints("Yahtzee", abr);
 		yzSpan.classList.add('keep');
+	}
 	break;
 	case "YZ+":
+	if (bonusSpan.classList.contains('active')){
 		lowerBoard.bonus += v;
 		bonusSpan.innerHTML = lowerBoard.bonus;
 		total.lower += lowerBoard.bonus;
 		bankPoints("Yahtzee Bonus", abr);
 		bonusSpan.classList.add('keep');
+	}
 	break;
 	}
 	console.log(lowerBoard);
 }
 
-//Adds EventListener to potential points.
-function upperPoints (ord) {
+function count (num) {
 	let cnt = 0;
     		for (t=0; t<dice.value.length; t++) {
-    			if(dice.value[t]===ord) {
+    			if(dice.value[t]===num) {
     				cnt++;
     		}
     	}
-	let pts = ord*cnt;
+    	return cnt;
+}
+
+//Adds EventListener to potential points.
+function upperPoints (ord) {
+	
+	let pts = ord * count(ord);
 
 	switch(ord) {
 		case 1:
 	    	acesSpan.innerHTML = `+${pts}`;
 	    	acesSpan.classList.add('active');
-	    	acesSpan.addEventListener('click', function () {
-	    		keepUpperPoints(ord, pts);
-			});
+	    	acesSpan.addEventListener('click', function () {keepUpperPoints(ord);});
 		break;
 		case 2:
 	    	twosSpan.innerHTML = `+${pts}`;
 	    	twosSpan.classList.add('active');
-	    	twosSpan.addEventListener('click', function() {keepUpperPoints(ord, pts);});
+	    	twosSpan.addEventListener('click', function () {keepUpperPoints(ord);});
 		break;
 		case 3:
 			threesSpan.innerHTML = `+${pts}`;
 	    	threesSpan.classList.add('active');
-	    	threesSpan.addEventListener('click', function() {keepUpperPoints(ord, pts);});
+	    	threesSpan.addEventListener('click', function() {keepUpperPoints(ord);});
 		break;
 		case 4:
 			foursSpan.innerHTML = `+${pts}`;
 	    	foursSpan.classList.add('active');
-	    	foursSpan.addEventListener('click', function() {keepUpperPoints(ord, pts);});
+	    	foursSpan.addEventListener('click', function() {keepUpperPoints(ord);});
 		break;
 		case 5:
 			fivesSpan.innerHTML = `+${pts}`;
 	    	fivesSpan.classList.add('active');
-	    	fivesSpan.addEventListener('click', function() {keepUpperPoints(ord, pts);});
+	    	fivesSpan.addEventListener('click', function() {keepUpperPoints(ord);});
 		break;
 		case 6:
 			sixesSpan.innerHTML = `+${pts}`;
 	    	sixesSpan.classList.add('active');
-	    	sixesSpan.addEventListener('click', function() {keepUpperPoints(ord, pts);});
+	    	sixesSpan.addEventListener('click', function() {keepUpperPoints(ord);});
 		break;
 	}
 }
@@ -500,12 +519,12 @@ function lowerPoints (name, val) {
 		lgSpan.innerHTML = `+${val}`;
 	    lgSpan.classList.add('active');
 		lgSpan.addEventListener('click', function() {keepLowerPoints(name, val);});
-		console.log(name);
 	break;
 	case "SM":
-		smSpan.innerHTML = `+${val}`;
 	    smSpan.classList.add('active');
 		smSpan.addEventListener('click', function() {keepLowerPoints(name, val);});
+		smSpan.innerHTML = `+${val}`;
+		console.log(val);
 	break;
 	case "YZ":
 		yzSpan.innerHTML = `+${val}`;
@@ -545,14 +564,12 @@ function lowerPoints (name, val) {
 function selectDie1() {
 	if (!dice.choices[0] || !dice.value[0]) {
 		dice.choices[0] = true;
-		die1Img.classList.remove('red-glow');
-		die1Img.classList.add('green-glow');
+		die1Img.classList.remove('green-glow');
 		return true;
 	}
 	else {
 		dice.choices[0] = false;
-		die1Img.classList.remove('green-glow');
-		die1Img.classList.add('red-glow');
+		die1Img.classList.add('green-glow');
 		return false;
 	}
 }		
@@ -560,14 +577,12 @@ function selectDie1() {
 function selectDie2() {
 	if (!dice.choices[1] || !dice.value[1]) {
 		dice.choices[1] = true;
-		die2Img.classList.remove('red-glow');
-		die2Img.classList.add('green-glow');
+		die2Img.classList.remove('green-glow');
 		return true;
 	}
 	else {
 		dice.choices[1] = false;
-		die2Img.classList.remove('green-glow');
-		die2Img.classList.add('red-glow');
+		die2Img.classList.add('green-glow');
 		return false;
 	}
 }	
@@ -575,14 +590,12 @@ function selectDie2() {
 function selectDie3() {
 	if (!dice.choices[2] || !dice.value[2]) {
 		dice.choices[2] = true;
-		die3Img.classList.remove('red-glow');
-		die3Img.classList.add('green-glow');
+		die3Img.classList.remove('green-glow');
 		return true;
 	}
 	else {
 		dice.choices[2] = false;
-		die3Img.classList.remove('green-glow');
-		die3Img.classList.add('red-glow');
+		die3Img.classList.add('green-glow');
 		return false;
 	}
 }				
@@ -590,14 +603,12 @@ function selectDie3() {
 function selectDie4() {
 	if (!dice.choices[3] || !dice.value[3]) {
 		dice.choices[3] = true;
-		die4Img.classList.remove('red-glow');
-		die4Img.classList.add('green-glow');
+		die4Img.classList.remove('green-glow');
 		return true;
 	}
 	else {
 		dice.choices[3] = false;
-		die4Img.classList.remove('green-glow');
-		die4Img.classList.add('red-glow');
+		die4Img.classList.add('green-glow');
 		return false;
 	}
 }	
@@ -605,14 +616,12 @@ function selectDie4() {
 function selectDie5() {
 	if (!dice.choices[4] || !dice.value[4]) {
 		dice.choices[4] = true;
-		die5Img.classList.remove('red-glow');
-		die5Img.classList.add('green-glow');
+		die5Img.classList.remove('green-glow');
 		return true;
 	}
 	else {
 		dice.choices[4] = false;
-		die5Img.classList.remove('green-glow');
-		die5Img.classList.add('red-glow');
+		die5Img.classList.add('green-glow');
 		return false;
 	}
 }
