@@ -92,6 +92,7 @@ function score () {
 }
 
 function objNull(obj) {
+<<<<<<< HEAD
 	for (let key in obj) {
 		if (obj[key] !== null) {
 			return false;
@@ -99,6 +100,11 @@ function objNull(obj) {
 			else {
 				return true;
 			}
+=======
+	for (const key in obj) {
+		if (obj[key] === null & obj[key] !== 0) return true;
+			else return false;
+>>>>>>> 7df1441668557d0d35c83bf374d785d026e81e1b
 	}
 }
 
@@ -480,12 +486,20 @@ function upperPoints (ord) {
 		case 1:
 	    	acesSpan.innerHTML = `+${pts}`;
 	    	acesSpan.classList.add('active');
+<<<<<<< HEAD
 	    	acesSpan.addEventListener('click', function () {keepUpperPoints(ord);});
+=======
+	    	acesSpan.addEventListener('click', function () {keepUpperPoints(ord, pts);});
+>>>>>>> 7df1441668557d0d35c83bf374d785d026e81e1b
 		break;
 		case 2:
 	    	twosSpan.innerHTML = `+${pts}`;
 	    	twosSpan.classList.add('active');
+<<<<<<< HEAD
 	    	twosSpan.addEventListener('click', function () {keepUpperPoints(ord);});
+=======
+	    	twosSpan.addEventListener('click', function () {keepUpperPoints(ord, pts);});
+>>>>>>> 7df1441668557d0d35c83bf374d785d026e81e1b
 		break;
 		case 3:
 			threesSpan.innerHTML = `+${pts}`;
