@@ -34,6 +34,8 @@ const die3Img = document.getElementById('die3-img');
 const die4Img = document.getElementById('die4-img');
 const die5Img = document.getElementById('die5-img');
 
+// Create scoreboard
+
 let total = {
 	upper: 0,
 	grandUpper: 0,
